@@ -1,3 +1,4 @@
+*.pyc
 sens_server/__pycache__
 build/
 dist/
