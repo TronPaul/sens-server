@@ -1,14 +1,18 @@
 import io
 import flask
 import sens.status
-import sens.image
+import sens.application
 
 app = flask.Flask(__name__)
 
 @app.route('/<channel_name>')
 def image(channel_name):
-    status = sens.status.get_status(channel_name)
-    image = sens.image.build_image(status)
+    try:
+        image = sens.application.build_image(channel_name)
+    except sens.status.ChannelNotFoundError as e:
+        flask.abort(404)
+    except sens.status.TwitchError as e:
+        flask.abort(400)
     fp = io.BytesIO()
     image.save(fp, 'png')
     fp.seek(0)
